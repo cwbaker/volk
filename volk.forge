@@ -1,0 +1,24 @@
+
+for _, cc in toolsets('cc.*') do
+    local defines = switch {
+        cc.settings.platform;
+        linux = {
+            'VK_USE_PLATFORM_XLIB_KHR';
+        };
+        macos = {
+            'VK_USE_PLATFORM_MACOS_MVK';
+        };
+        windows = {
+            'VK_USE_PLATFORM_WIN32_KHR';
+        };
+    };
+
+    cc:all {
+        cc:StaticLibrary '${lib}/volk_${platform}_${architecture}' {
+            cc:Cc '${obj}/%1' {
+                defines = defines;
+                'volk.c';
+            };
+        };
+    };
+end
